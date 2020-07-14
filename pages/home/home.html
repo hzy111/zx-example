@@ -1,0 +1,102 @@
+<!--
+ * @Author: your name
+ * @Date: 2020-02-26 15:52:56
+ * @LastEditTime: 2020-04-03 14:37:06
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \gzdt3_ms\src\WebApps\Apps_vue\ScheduleHome\pages\home\home.html
+ -->
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>我的日程</title>
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <!--必须引用的框架-->
+    <script src="../../libs/Mango.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../libs/animate.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="../../libs/vant.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="../../app.css" media="screen">
+    <script src="../../libs/jquery.min.js"></script>
+    <script src="../../libs/vue.min.js"></script>
+    <script src="../../libs/hammer.min.js"></script>
+    <script src="../../libs/vant.js"></script>
+    <script src="../../app.js"></script>
+    <!--当前页面引用的样式-->
+    <link rel="stylesheet" type="text/css" href="home.css" media="screen">
+    <script src="home.js"></script>
+</head>
+
+<body>
+    <!--容器-->
+    <div id="app" class="or_container" v-cloak>
+        <!-- 导航-->
+        <div class="or_top">
+            <van-row>
+                <van-col span="4"> <img v-on:click="onMsgClick()" class="or_top_msg" src="../../assets/img/msg.png" />
+                </van-col>
+                <van-col span="16">
+                    <div class="or_top_title">我的日程</div>
+                </van-col>
+                <van-col span="4"><img v-on:click="onMoreClick()" class="or_top_more" src="../../assets/img/more.png" />
+                </van-col>
+            </van-row>
+        </div>
+        <div class="or_content">
+            <!--日历控件-->
+            <div id="swipeView" class="or_schedule">
+                <!--日历-->
+                <div class="or_week">
+                    <template v-for="item in ScheduleWeeks">
+                        <div class="or_week_item">{{item}}</div>
+                    </template>
+                </div>
+                <div id="scheduleContainer" class="or_day" v-on>
+                    <template v-for="item in ScheduleDays">
+                        <div class="or_day_item"
+                            v-bind:class="{or_cur_day:item.IsCurrentDay,or_other_item:item.IsOther,or_cur_select:item.IsSelected}"
+                            v-on:click="onDayClick(item)">
+                            <span>{{item.Title}}</span>
+                        </div>
+                    </template>
+                </div>
+                <!--顶部-->
+                <div class="or_schedule_tip">
+                    <img v-if="IsWeekShow" class="or_title_img" src="../../assets/img/down.png" />
+                    <img v-else class="or_title_img" src="../../assets/img/up.png" v-on:click="onSwipeClick()" />
+                    <div class="or_title_view">
+                        <div>
+                            <div v-if="!IsToday" v-on:click="onTodayClick()" class="or_title_today">今天</div>
+                        </div>
+                        <div class="or_title"  v-on:click="onSwipeClick()">{{ScheduleTitle}}</div>
+                        <div>
+                            <div v-if="!IsToday" class="or_title_tip">{{ScheduleCountTip}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--内容数据-->
+            <div id="taskList" class="or_task">
+                <van-pull-refresh loading-text="" animation-duration="1" head-height="1" success-text=""
+                    v-model="Touch.IsRefreshLoading" loosing-text="" pulling-text="" @refresh="onTaskRefresh">
+                    <!-- <van-list v-model="Touch.IsPullLoading" @load="onTaskPullLoad" :finished="Touch.IsPullFinish"> -->
+                    <template v-for="item in TaskItems">
+                        <div class="or_task_item" v-on:click="onTaskItemClick(item)">
+                            <div class="or_task_tip">
+                                <span>{{item.DateStr}}</span><span class="or_task_title">{{item.Content}}</span>
+                            </div>
+                            <div class="or_task_selected">
+                                <img class="or_task_avatar" :src="item.Users[0].Avatar" />
+                                <img class="or_task_img" src="../../assets/img/arrow-right.png" />
+                            </div>
+                            <div style="clear: both;"></div>
+                        </div>
+                    </template>
+                    <!-- </van-list> -->
+                </van-pull-refresh>
+            </div>
+        </div>
+        <img class="or_add_view" v-on:click="onAddLog()" src="../../assets/img/add.png" />
+    </div>
+</body>
